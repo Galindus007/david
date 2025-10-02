@@ -72,11 +72,35 @@ switch ($action) {
         $stmt->execute();
         break;
 
+    // --- AÑADIR ESTOS DOS NUEVOS BLOQUES ---
+    case 'add_category':
+        $nombre = $_POST['nombre'] ?? '';
+        $orden = $_POST['orden'] ?? 0;
+        if (!empty($nombre)) {
+            $stmt = $conn->prepare("INSERT INTO product_categories (nombre, orden) VALUES (?, ?)");
+            $stmt->bind_param("si", $nombre, $orden);
+            $stmt->execute();
+        }
+        break;
+
+    case 'delete_category':
+        $id = $_POST['id'] ?? 0;
+        if ($id > 0) {
+            $stmt = $conn->prepare("DELETE FROM product_categories WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        }
+        break;
+    // --- FIN DE LOS BLOQUES NUEVOS ---
+
+    // Busca este case en tu switch
     case 'add_product':
         $imagen_url = upload_file('imagen');
         if ($imagen_url) {
-            $stmt = $conn->prepare("INSERT INTO productos (nombre, descripcion, imagen_url) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $_POST['nombre'], $_POST['descripcion'], $imagen_url);
+            // CAMBIO: Añadimos 'detalles' a la consulta
+            $stmt = $conn->prepare("INSERT INTO productos (nombre, descripcion, detalles, imagen_url) VALUES (?, ?, ?, ?)");
+            // CAMBIO: El tipo de parámetro cambia de "sss" a "ssss" y añadimos la variable
+            $stmt->bind_param("ssss", $_POST['nombre'], $_POST['descripcion'], $_POST['detalles'], $imagen_url);
             $stmt->execute();
         }
         break;
