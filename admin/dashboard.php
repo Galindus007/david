@@ -143,6 +143,50 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 <button type="submit">Guardar Configuración</button>
             </form>
         </div>
+        <div class="section">
+            <h2>Administrar Categorías del Menú</h2>
+
+            <form action="save.php" method="post">
+                <input type="hidden" name="action" value="add_category">
+                <h3>Añadir Nueva Categoría</h3>
+                <label for="cat_nombre">Nombre de la Categoría:</label>
+                <input type="text" id="cat_nombre" name="nombre" required>
+                <label for="cat_orden">Orden (número más bajo aparece primero):</label>
+                <input type="number" id="cat_orden" name="orden" value="0">
+                <button type="submit">Añadir Categoría</button>
+            </form>
+            <hr>
+
+            <h3>Categorías Actuales</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Orden</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Necesitamos cargar las categorías al principio del archivo
+                    $categories_result = $conn->query("SELECT * FROM product_categories ORDER BY orden ASC");
+                    while ($category = $categories_result->fetch_assoc()):
+                    ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($category['nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($category['orden']); ?></td>
+                            <td>
+                                <form action="save.php" method="post" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete_category">
+                                    <input type="hidden" name="id" value="<?php echo $category['id']; ?>">
+                                    <button type="submit" onclick="return confirm('¿Estás seguro? Esto eliminará la categoría del menú.')">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
 
         <div class="section">
             <h2>Administrar Banner</h2>
@@ -193,10 +237,16 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 <h3>Añadir Nuevo Producto</h3>
                 <label for="prod_nombre">Título:</label>
                 <input type="text" id="prod_nombre" name="nombre" required>
-                <label for="prod_desc">Descripción:</label>
+
+                <label for="prod_desc">Descripción (corta, para el catálogo):</label>
                 <textarea id="prod_desc" name="descripcion" required></textarea>
+
+                <label for="prod_detalles">Detalles Completos (para la página del producto):</label>
+                <textarea id="prod_detalles" name="detalles" rows="6"></textarea>
+
                 <label for="prod_img">Imagen:</label>
                 <input type="file" id="prod_img" name="imagen" required>
+
                 <button type="submit">Añadir Producto</button>
             </form>
             <hr>
@@ -226,6 +276,8 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 </tbody>
             </table>
         </div>
+
+
 
         <div class="section">
             <h2>Pie de Página</h2>

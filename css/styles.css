@@ -88,3 +88,78 @@ body {
     object-fit: cover; /* MUY IMPORTANTE: asegura que el video cubra todo el espacio sin deformarse */
     z-index: -1; /* Lo pone detrás de cualquier texto o botón en el slide */
 }
+
+/* --- Estilos para la Página de Detalle del Producto --- */
+
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-detail-container {
+    max-width: 1100px;
+    margin: 4rem auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.product-detail-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.product-detail-info h1 {
+    font-family: var(--font-headings);
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.product-detail-info .short-description {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.product-detail-info .full-details {
+    margin-top: 1.5rem;
+    line-height: 1.8;
+}
+
+.product-detail-info .full-details h3 {
+    font-family: var(--font-headings);
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: var(--secondary-color);
+}
+
+
+/* --- Responsividad para la página de detalle --- */
+@media (max-width: 768px) {
+    .product-detail-container {
+        grid-template-columns: 1fr; /* Una sola columna en móviles */
+        margin-top: 2rem;
+        padding: 1rem;
+    }
+
+    .product-detail-info h1 {
+        font-size: 2rem;
+    }
+}
