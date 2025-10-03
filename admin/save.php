@@ -128,7 +128,64 @@ switch ($action) {
         $value = $_POST['contact_address'];
         $stmt->execute();
         break;
-}
+
+    case 'save_about_us':
+        // Manejar la subida de la imagen principal
+        if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
+            $imagen_url = upload_file('main_image');
+            if ($imagen_url) {
+                $stmt_img = $conn->prepare("UPDATE about_us_content SET content_value = ? WHERE content_key = 'main_image_url'");
+                $stmt_img->bind_param("s", $imagen_url);
+                $stmt_img->execute();
+            }
+        }
+
+        // Manejar la subida de la imagen secundaria
+        if (isset($_FILES['secondary_image']) && $_FILES['secondary_image']['error'] === UPLOAD_ERR_OK) {
+            $imagen_url_sec = upload_file('secondary_image');
+            if ($imagen_url_sec) {
+                $stmt_img_sec = $conn->prepare("UPDATE about_us_content SET content_value = ? WHERE content_key = 'secondary_image_url'");
+                $stmt_img_sec->bind_param("s", $imagen_url_sec);
+                $stmt_img_sec->execute();
+            }
+        }
+
+        // Actualizar todos los campos de texto
+        $stmt_text = $conn->prepare("UPDATE about_us_content SET content_value = ? WHERE content_key = ?");
+        $stmt_text->bind_param("ss", $value, $key);
+
+        $text_fields = ['page_title', 'main_text', 'mission_title', 'mission_text', 'vision_title', 'vision_text', 'values_title', 'values_text', 'secondary_text'];
+
+        foreach ($text_fields as $field) {
+            if (isset($_POST[$field])) {
+                $key = $field;
+                $value = $_POST[$field];
+                $stmt_text->execute();
+            }
+        }
+        break;
+
+    // Para guardar el mapa
+    case 'general_settings':
+        $stmt = $conn->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_name = ?");
+        $stmt->bind_param("ss", $value, $key);
+        // ... (todas las líneas que ya tenías) ...
+        $key = 'google_maps_iframe';
+        $value = $_POST['google_maps_iframe'];
+        $stmt->execute();
+        break;
+
+    // Nuevo case para marcar mensajes como leídos
+    case 'mark_as_read':
+        $id = $_POST['id'] ?? 0;
+        if ($id > 0) {
+            $stmt = $conn->prepare("UPDATE contact_messages SET leido = 1 WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        }
+        break;
+} // Cierre del switch
+
 
 // Redirigir de vuelta al dashboard
 header('Location: dashboard.php');

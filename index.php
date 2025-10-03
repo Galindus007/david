@@ -40,50 +40,8 @@ while ($row = $footer_result->fetch_assoc()) {
 </head>
 
 <body>
-    <div class="top-bar">
-        <div class="social-media">
-            <a href="<?php echo htmlspecialchars($settings['social_facebook']); ?>" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="<?php echo htmlspecialchars($settings['social_instagram']); ?>" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="<?php echo htmlspecialchars($settings['social_whatsapp']); ?>" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-        <div class="login">
-            <a href="./admin/">Login</a>
-        </div>
-    </div>
-
-    <header class="main-header">
-        <div class="logo">
-            <img src="images/logo.png" alt="Logo de la Empresa">
-            <h1><?php echo htmlspecialchars($settings['company_name']); ?></h1>
-        </div>
-        <nav>
-            <button class="hamburger" id="hamburger-icon" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#">Inicio</a></li>
-                <li class="dropdown">
-                    <a href="#catalogo" class="dropbtn">Productos <i class="fas fa-chevron-down"></i></a>
-                    <div class="dropdown-content">
-                        <?php if ($products_for_menu && $products_for_menu->num_rows > 0): ?>
-                            <?php while ($product_item = $products_for_menu->fetch_assoc()): ?>
-                                <a href="producto.php?id=<?php echo $product_item['id']; ?>">
-                                    <?php echo htmlspecialchars($product_item['nombre']); ?>
-                                </a>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <a href="#">No hay productos</a>
-                        <?php endif; ?>
-                    </div>
-                </li>
-                <li><a href="#">Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
-
+    <?php include 'php/header.php'; ?>
+           
     <section class="main-banner">
         <div class="slider" data-speed="<?php echo htmlspecialchars($settings['slider_speed']); ?>">
 
@@ -121,31 +79,8 @@ while ($row = $footer_result->fetch_assoc()) {
         </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-section about">
-                <h3>Sobre Nosotros</h3>
-                <p><?php echo nl2br(htmlspecialchars($footer['about_us'])); ?></p>
-            </div>
-            <div class="footer-section links">
-                <h3>Enlaces Rápidos</h3>
-                <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#catalogo">Productos</a></li>
-                    <li><a href="#">Términos y Condiciones</a></li>
-                </ul>
-            </div>
-            <div class="footer-section contact">
-                <h3>Contacto</h3>
-                <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($footer['contact_phone']); ?></p>
-                <p><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($footer['contact_email']); ?></p>
-                <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($footer['contact_address']); ?></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; <?php echo date("Y"); ?> | <?php echo htmlspecialchars($settings['company_name']); ?> | Todos los derechos reservados.
-        </div>
-    </footer>
+
+    <?php include 'php/footer.php'; ?>
 
     <script src="js/scripts.js"></script>
 </body>

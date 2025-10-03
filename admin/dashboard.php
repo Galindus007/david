@@ -115,6 +115,7 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
     <div class="container">
         <h1>Panel de Administración</h1>
 
+        <!-- Inicio Configuración General -->
         <div class="section">
             <h2>Configuración General</h2>
             <form action="save.php" method="post">
@@ -140,9 +141,15 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 <label for="social_whatsapp">Enlace WhatsApp:</label>
                 <input type="text" id="social_whatsapp" name="social_whatsapp" value="<?php echo htmlspecialchars($settings['social_whatsapp']); ?>">
 
+                <label for="google_maps">Código de Google Maps:</label>
+                <textarea id="google_maps" name="google_maps_iframe" rows="4"><?php echo htmlspecialchars($settings['google_maps_iframe']); ?></textarea>
+
                 <button type="submit">Guardar Configuración</button>
             </form>
         </div>
+        <!-- Fin Configuración General -->
+
+        <!-- Inicio Administrar Categorías del Menú -->
         <div class="section">
             <h2>Administrar Categorías del Menú</h2>
 
@@ -187,7 +194,9 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 </tbody>
             </table>
         </div>
+        <!-- Fin Administrar Categorías -->
 
+        <!-- Inicio Administrar Banner -->
         <div class="section">
             <h2>Administrar Banner</h2>
             <form action="save.php" method="post" enctype="multipart/form-data">
@@ -229,7 +238,9 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 </tbody>
             </table>
         </div>
+        <!-- Fin Administrar Banner -->
 
+        <!-- Inicio Administrar Productos -->
         <div class="section">
             <h2>Administrar Productos</h2>
             <form action="save.php" method="post" enctype="multipart/form-data">
@@ -276,9 +287,9 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 </tbody>
             </table>
         </div>
+        <!-- Fin Productos -->
 
-
-
+        <!-- Pie de Página -->
         <div class="section">
             <h2>Pie de Página</h2>
             <form action="save.php" method="post">
@@ -298,7 +309,111 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
                 <button type="submit">Guardar Información</button>
             </form>
         </div>
+        <!-- Fin Pie de Página -->
+
+        <!-- Inicio Página "Nosotros" -->
+        <div class="section">
+            <h2>Página "Nosotros"</h2>
+            <form action="save.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="save_about_us">
+
+                <?php
+                $about_result = $conn->query("SELECT * FROM about_us_content");
+                $about_content = [];
+                while ($row = $about_result->fetch_assoc()) {
+                    $about_content[$row['content_key']] = $row['content_value'];
+                }
+                ?>
+
+                <h3>Contenido Principal</h3>
+                <label for="about_title">Título de la Página:</label>
+                <input type="text" id="about_title" name="page_title" value="<?php echo htmlspecialchars($about_content['page_title']); ?>">
+
+                <label for="about_text">Texto de Introducción (Historia):</label>
+                <textarea id="about_text" name="main_text" rows="8"><?php echo htmlspecialchars($about_content['main_text']); ?></textarea>
+
+                <label for="about_image">Imagen de Cabecera Principal:</label>
+                <input type="file" id="about_image" name="main_image">
+                <p style="font-size: 0.8em; margin-bottom: 1rem;">Sube una nueva imagen para reemplazar la cabecera actual: <?php echo htmlspecialchars($about_content['main_image_url']); ?></p>
+
+                <hr style="margin: 2rem 0;">
+
+                <h3>Sección Misión, Visión y Valores</h3>
+                <label for="mission_title">Título Misión:</label>
+                <input type="text" id="mission_title" name="mission_title" value="<?php echo htmlspecialchars($about_content['mission_title']); ?>">
+                <label for="mission_text">Texto Misión:</label>
+                <textarea id="mission_text" name="mission_text" rows="3"><?php echo htmlspecialchars($about_content['mission_text']); ?></textarea>
+
+                <label for="vision_title">Título Visión:</label>
+                <input type="text" id="vision_title" name="vision_title" value="<?php echo htmlspecialchars($about_content['vision_title']); ?>">
+                <label for="vision_text">Texto Visión:</label>
+                <textarea id="vision_text" name="vision_text" rows="3"><?php echo htmlspecialchars($about_content['vision_text']); ?></textarea>
+
+                <label for="values_title">Título Valores:</label>
+                <input type="text" id="values_title" name="values_title" value="<?php echo htmlspecialchars($about_content['values_title']); ?>">
+                <label for="values_text">Texto Valores:</label>
+                <textarea id="values_text" name="values_text" rows="3"><?php echo htmlspecialchars($about_content['values_text']); ?></textarea>
+
+                <hr style="margin: 2rem 0;">
+
+                <h3>Sección Secundaria</h3>
+                <label for="secondary_text">Texto Adicional:</label>
+                <textarea id="secondary_text" name="secondary_text" rows="6"><?php echo htmlspecialchars($about_content['secondary_text']); ?></textarea>
+
+                <label for="secondary_image">Imagen Secundaria:</label>
+                <input type="file" id="secondary_image" name="secondary_image">
+                <p style="font-size: 0.8em; margin-bottom: 1rem;">Imagen para la sección de texto adicional: <?php echo htmlspecialchars($about_content['secondary_image_url']); ?></p>
+
+                <button type="submit">Guardar Información de "Nosotros"</button>
+            </form>
+        </div>
+        <!-- Fin Página "Nosotros" -->
+
+        <!-- Inicio Mensajes Recibidos -->
+        <div class="section">
+            <h2>Mensajes Recibidos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Mensaje</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $messages_result = $conn->query("SELECT * FROM contact_messages ORDER BY fecha_envio DESC");
+                    while ($msg = $messages_result->fetch_assoc()):
+                    ?>
+                        <tr style="<?php if ($msg['leido'] == 0) echo 'font-weight: bold;'; ?>">
+                            <td><?php echo htmlspecialchars($msg['nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($msg['email']); ?></td>
+                            <td><?php echo htmlspecialchars($msg['mensaje']); ?></td>
+                            <td><?php echo $msg['fecha_envio']; ?></td>
+                            <td>
+                                <?php if ($msg['leido'] == 0): ?>
+                                    <form action="save.php" method="post" style="display:inline;">
+                                        <input type="hidden" name="action" value="mark_as_read">
+                                        <input type="hidden" name="id" value="<?php echo $msg['id']; ?>">
+                                        <button type="submit">Marcar como leído</button>
+                                    </form>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+        <!-- Fin Mensajes Recibidos -->
+
     </div>
+</body>
+
+</html>
+
+</div>
 </body>
 
 </html>
