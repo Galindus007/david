@@ -31,6 +31,7 @@ while ($row = $footer_result->fetch_assoc()) {
 
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title><?php echo htmlspecialchars($settings['page_title']); ?> | <?php echo htmlspecialchars($settings['company_name']); ?></title>
@@ -41,7 +42,7 @@ while ($row = $footer_result->fetch_assoc()) {
 
 <body>
     <?php include 'php/header.php'; ?>
-           
+
     <section class="main-banner">
         <div class="slider" data-speed="<?php echo htmlspecialchars($settings['slider_speed']); ?>">
 
@@ -82,7 +83,7 @@ while ($row = $footer_result->fetch_assoc()) {
 
     <?php include 'php/footer.php'; ?>
 
-    <script src="js/scripts.js"></script>
+    
 </body>
 
 </html>

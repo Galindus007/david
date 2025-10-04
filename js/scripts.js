@@ -48,12 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Menú Hamburguesa para Móviles
-    const hamburger = document.getElementById('hamburger-icon');
-    const navMenu = document.getElementById('nav-menu');
+    const hamburger = document.getElementById('hamburger-icon'); // Busca el botón
+    const navMenu = document.getElementById('nav-menu');       // Busca la lista del menú
 
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
+    if (hamburger && navMenu) { // Si encuentra ambos...
+        hamburger.addEventListener('click', () => { // ...cuando se haga clic en el botón...
+            navMenu.classList.toggle('active');     // ...añade o quita la clase 'active' al menú.
         });
     }
 });
