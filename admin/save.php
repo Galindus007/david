@@ -97,10 +97,8 @@ switch ($action) {
     case 'add_product':
         $imagen_url = upload_file('imagen');
         if ($imagen_url) {
-            // CAMBIO: Añadimos 'detalles' a la consulta
-            $stmt = $conn->prepare("INSERT INTO productos (nombre, descripcion, detalles, imagen_url) VALUES (?, ?, ?, ?)");
-            // CAMBIO: El tipo de parámetro cambia de "sss" a "ssss" y añadimos la variable
-            $stmt->bind_param("ssss", $_POST['nombre'], $_POST['descripcion'], $_POST['detalles'], $imagen_url);
+            $stmt = $conn->prepare("INSERT INTO productos (nombre, descripcion, detalles, category_id, imagen_url) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssis", $_POST['nombre'], $_POST['descripcion'], $_POST['detalles'], $_POST['category_id'], $imagen_url);
             $stmt->execute();
         }
         break;
@@ -110,7 +108,31 @@ switch ($action) {
         $stmt->bind_param("i", $_POST['id']);
         $stmt->execute();
         break;
-
+    // -- EDITAR PRODUCTO --
+    case 'edit_product':
+        $product_id = intval($_POST['id'] ?? 0);
+        if ($product_id > 0) {
+            // Manejo de la imagen: solo actualizamos si se sube una nueva
+            $new_image_url = null;
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $new_image_url = upload_file('imagen');
+            }
+            
+            if ($new_image_url) {
+                // Si hay nueva imagen, la consulta la incluye (6 variables)
+                $stmt = $conn->prepare("UPDATE productos SET nombre=?, descripcion=?, detalles=?, category_id=?, imagen_url=? WHERE id=?");
+                $stmt->bind_param("sssisi", $_POST['nombre'], $_POST['descripcion'], $_POST['detalles'], $_POST['category_id'], $new_image_url, $product_id);
+            } else {
+                // Si NO hay nueva imagen, la consulta no la toca (5 variables)
+                $stmt = $conn->prepare("UPDATE productos SET nombre=?, descripcion=?, detalles=?, category_id=? WHERE id=?");
+                // AQUÍ ESTÁ LA CORRECCIÓN: "sssi" se convierte en "sssii"
+                $stmt->bind_param("sssii", $_POST['nombre'], $_POST['descripcion'], $_POST['detalles'], $_POST['category_id'], $product_id);
+            }
+            $stmt->execute();
+        }
+        break;
+    // --- FIN EDITAR PRODUCTO ---
+    // --- FOOTER INFO ---
     case 'footer_info':
         $stmt = $conn->prepare("UPDATE footer_info SET info_value = ? WHERE info_key = ?");
         $stmt->bind_param("ss", $value, $key);
@@ -128,7 +150,8 @@ switch ($action) {
         $value = $_POST['contact_address'];
         $stmt->execute();
         break;
-
+    // --- FIN FOOTER INFO ---
+    // --- ABOUT US ---
     case 'save_about_us':
         // Manejar la subida de la imagen principal
         if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
@@ -184,7 +207,8 @@ switch ($action) {
             $stmt->execute();
         }
         break;
-} // Cierre del switch
+        
+    } // Cierre del switch
 
 
 // Redirigir de vuelta al dashboard
