@@ -35,7 +35,7 @@ $categories_result = $conn->query("SELECT * FROM product_categories ORDER BY ord
                 <div class="dropdown-content">
                     <?php if ($categories_result && $categories_result->num_rows > 0): ?>
                         <?php while($category = $categories_result->fetch_assoc()): ?>
-                            <a href="#"><?php echo htmlspecialchars($category['nombre']); ?></a>
+                            <a href="categoria.php?id=<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['nombre']); ?></a>
                         <?php endwhile; ?>
                     <?php endif; ?>
                 </div>

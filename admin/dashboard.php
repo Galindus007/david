@@ -246,8 +246,21 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
             <form action="save.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="add_product">
                 <h3>Añadir Nuevo Producto</h3>
+
                 <label for="prod_nombre">Título:</label>
                 <input type="text" id="prod_nombre" name="nombre" required>
+
+                <label for="prod_categoria">Categoría:</label>
+                <select name="category_id" id="prod_categoria" required>
+                    <option value="">-- Selecciona una categoría --</option>
+                    <?php
+                    // Volvemos a cargar las categorías para usarlas en el desplegable
+                    $categories_for_select = $conn->query("SELECT * FROM product_categories ORDER BY nombre ASC");
+                    while ($cat = $categories_for_select->fetch_assoc()):
+                    ?>
+                        <option value="<?php echo $cat['id']; ?>"><?php echo htmlspecialchars($cat['nombre']); ?></option>
+                    <?php endwhile; ?>
+                </select>
 
                 <label for="prod_desc">Descripción (corta, para el catálogo):</label>
                 <textarea id="prod_desc" name="descripcion" required></textarea>
@@ -262,30 +275,45 @@ $products = $conn->query("SELECT * FROM productos ORDER BY id DESC");
             </form>
             <hr>
             <h3>Productos Existentes</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Título</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($product = $products->fetch_assoc()): ?>
-                        <tr>
-                            <td><img src="../<?php echo htmlspecialchars($product['imagen_url']); ?>" alt="" width="50"></td>
-                            <td><?php echo htmlspecialchars($product['nombre']); ?></td>
-                            <td>
-                                <form action="save.php" method="post" style="display:inline;">
-                                    <input type="hidden" name="action" value="delete_product">
-                                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                    <button type="submit" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+<table>
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Título del Producto</th>
+            <th>Categoría</th>
+            <th>Acciones</th> </tr>
+    </thead>
+    <tbody>
+        <?php
+        $products_list_query = "
+            SELECT p.id, p.nombre, p.imagen_url, c.nombre AS categoria_nombre 
+            FROM productos p 
+            LEFT JOIN product_categories c ON p.category_id = c.id 
+            ORDER BY p.id DESC
+        ";
+        $products_result = $conn->query($products_list_query);
+
+        while($product = $products_result->fetch_assoc()): 
+        ?>
+            <tr>
+                <td><img src="../<?php echo htmlspecialchars($product['imagen_url']); ?>" alt="" width="50" height="50" style="object-fit: cover;"></td>
+                <td><?php echo htmlspecialchars($product['nombre']); ?></td>
+                <td><?php echo htmlspecialchars($product['categoria_nombre'] ?? 'Sin categoría'); ?></td>
+                <td>
+                    <a href="edit_product.php?id=<?php echo $product['id']; ?>" class="edit-btn">Editar</a>
+                    
+                    <form action="save.php" method="post" style="display:inline;">
+                        <input type="hidden" name="action" value="delete_product">
+                        <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                        <button type="submit" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
+
+<style>.edit-btn { background: #ffc107; color: black; padding: 5px 10px; text-decoration: none; border-radius: 4px; margin-right: 5px; font-size: 0.9em; }</style>
         </div>
         <!-- Fin Productos -->
 
